@@ -30,7 +30,8 @@ import os
 import os.path
 
 # import paraview modules.
-from paraview import simple, web, servermanager, paraviewweb_wamp, paraviewweb_protocols, vtk
+from paraview import simple, servermanager, paraviewweb_wamp, paraviewweb_protocols, vtk
+from vtkweb import web
 
 # import annotations
 from autobahn.wamp import exportRpc
@@ -49,7 +50,7 @@ except ImportError:
 # Create custom Data Prober class to handle clients requests
 # =============================================================================
 
-class _DataProber(paraviewweb_wamp.ServerProtocol):
+class _DataProber(paraviewweb_wamp.PVServerProtocol):
     """DataProber extends web.ParaViewServerProtocol to add API for loading
         datasets add probing them."""
 
@@ -58,14 +59,14 @@ class _DataProber(paraviewweb_wamp.ServerProtocol):
     Database = ""
     Widget = None
     View = None
-    authKey = "paraviewweb-secret"
+    authKey = "vtkweb-secret"
 
     def initialize(self):
         global directoryToList
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
 
         # Update authentication key to use
         self.updateSecret(_DataProber.authKey)
@@ -214,6 +215,7 @@ class _DataProber(paraviewweb_wamp.ServerProtocol):
             self.loadData(path)
         bounds = self.update3DWidget()
         self.resetCameraWithBounds(bounds)
+        simple.Render()
         return True
 
     @exportRpc("getProbeData")

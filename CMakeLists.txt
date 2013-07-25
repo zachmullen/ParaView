@@ -481,20 +481,12 @@ list (APPEND PARAVIEW_MODULE_ROOTS
              CoProcessing/TestDriver)
 
 add_custom_target(ParaViewDoc)
-add_custom_command(
-     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/www.stamp
-     COMMAND ${CMAKE_COMMAND} -E make_directory "${PARAVIEW_WWW_DIR}"
-     COMMAND ${CMAKE_COMMAND} -E touch "${CMAKE_CURRENT_BINARY_DIR}/www.stamp")
-
-add_custom_target(ParaViewWWW ALL
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/www.stamp)
-
-install(DIRECTORY "${PARAVIEW_WWW_DIR}"
-    DESTINATION ${VTK_INSTALL_LIBRARY_DIR}
-    COMPONENT Runtime)
 
 if (PARAVIEW_ENABLE_WEB)
   list (APPEND PARAVIEW_MODULE_ROOTS Web)
+
+  set (vtkWeb_WWW_DEST ${PARAVIEW_WWW_DIR})
+  set (vtkWebPython_BUILD_DEST "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/site-packages")
 
   if (PARAVIEW_BUILD_WEB_DOCUMENTATION)
     list (APPEND ParaViewModulesDirs Web/Documentation)
@@ -518,6 +510,7 @@ mark_as_advanced(
   VTK_Group_Rendering
   VTK_Group_StandAlone
   VTK_Group_Views
+  VTK_Group_Web
   VTK_USE_TK
   VTK_WRAP_JAVA
   VTK_WRAP_TCL)

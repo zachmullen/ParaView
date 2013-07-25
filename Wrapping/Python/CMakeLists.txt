@@ -35,8 +35,9 @@ if (NOT PARAVIEW_ENABLE_PYTHON)
   return()
 endif()
 
+set(VTK_TOP_LEVEL_PACKAGE_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/site-packages")
 set(PV_PYTHON_MODULE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/paraview")
-set(PV_PYTHON_MODULE_BINARY_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/site-packages/paraview")
+set(PV_PYTHON_MODULE_BINARY_DIR "${VTK_TOP_LEVEL_PACKAGE_DIR}/paraview")
 
 # Handle out-of-source builds correctly.
 #
@@ -53,6 +54,10 @@ set(PV_PYTHON_MODULE_BINARY_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/site-packages
 if (VTK_BINARY_DIR)
   file (COPY "${VTK_BINARY_DIR}/Wrapping/Python/vtk"
         DESTINATION "${PV_PYTHON_MODULE_BINARY_DIR}"
+        USE_SOURCE_PERMISSIONS)
+  # Also copy it as a top-level package for VTK Python code to use it.
+  file (COPY "${VTK_BINARY_DIR}/Wrapping/Python/vtk"
+        DESTINATION "${VTK_TOP_LEVEL_PACKAGE_DIR}"
         USE_SOURCE_PERMISSIONS)
 endif()
 
@@ -89,7 +94,7 @@ ADD_CUSTOM_COMMAND(
   OUTPUT "${PV_PYTHON_MODULE_BINARY_DIR}/pv_compile_complete"
   )
 
-ADD_CUSTOM_TARGET(paraview_pyc ALL 
+ADD_CUSTOM_TARGET(paraview_pyc ALL
   DEPENDS "${PV_PYTHON_MODULE_BINARY_DIR}/pv_compile_complete")
 
 # Install the paraview module files.

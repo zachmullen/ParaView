@@ -12,8 +12,9 @@ from time import time
 from autobahn.wamp import exportRpc
 
 # import paraview modules.
-from paraview import simple, web, servermanager, web_helper
-from vtkParaViewWebCorePython import vtkPVWebInteractionEvent
+from paraview import simple, servermanager, web_helper
+from vtkweb import vtkweb_protocols
+from vtkWebCorePython import vtkWebInteractionEvent
 
 # =============================================================================
 #
@@ -21,7 +22,7 @@ from vtkParaViewWebCorePython import vtkPVWebInteractionEvent
 #
 # =============================================================================
 
-class ParaViewWebProtocol(object):
+class ParaViewWebProtocol(vtkweb_protocols.vtkWebProtocol):
 
     def __init__(self):
         self.Application = None
@@ -53,12 +54,6 @@ class ParaViewWebProtocol(object):
 
         return view
 
-    def setApplication(self, app):
-        self.Application = app
-
-    def getApplication(self):
-        return self.Application
-
 # =============================================================================
 #
 # Handle Mouse interaction on any type of view
@@ -76,23 +71,23 @@ class ParaViewWebMouseHandler(ParaViewWebProtocol):
 
         buttons = 0
         if event["buttonLeft"]:
-            buttons |= vtkPVWebInteractionEvent.LEFT_BUTTON;
+            buttons |= vtkWebInteractionEvent.LEFT_BUTTON;
         if event["buttonMiddle"]:
-            buttons |= vtkPVWebInteractionEvent.MIDDLE_BUTTON;
+            buttons |= vtkWebInteractionEvent.MIDDLE_BUTTON;
         if event["buttonRight"]:
-            buttons |= vtkPVWebInteractionEvent.RIGHT_BUTTON;
+            buttons |= vtkWebInteractionEvent.RIGHT_BUTTON;
 
         modifiers = 0
         if event["shiftKey"]:
-            modifiers |= vtkPVWebInteractionEvent.SHIFT_KEY
+            modifiers |= vtkWebInteractionEvent.SHIFT_KEY
         if event["ctrlKey"]:
-            modifiers |= vtkPVWebInteractionEvent.CTRL_KEY
+            modifiers |= vtkWebInteractionEvent.CTRL_KEY
         if event["altKey"]:
-            modifiers |= vtkPVWebInteractionEvent.ALT_KEY
+            modifiers |= vtkWebInteractionEvent.ALT_KEY
         if event["metaKey"]:
-            modifiers |= vtkPVWebInteractionEvent.META_KEY
+            modifiers |= vtkWebInteractionEvent.META_KEY
 
-        pvevent = vtkPVWebInteractionEvent()
+        pvevent = vtkWebInteractionEvent()
         pvevent.SetButtons(buttons)
         pvevent.SetModifiers(modifiers)
         pvevent.SetX(event["x"])

@@ -1,5 +1,5 @@
 vtk_module(vtkParaViewWebApplications
   DEPENDS
-    vtkParaViewWebJavaScript
+    vtkWebJavaScript
     vtkParaViewWebWidgets
   EXCLUDE_FROM_WRAPPING)

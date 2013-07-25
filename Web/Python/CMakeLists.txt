@@ -4,7 +4,7 @@ vtk_module_export("")
 
 find_package(PythonInterp)
 
-include(ParaViewMacros)
+include(vtkPythonPackages)
 
 set(ParaViewPython_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(ParaViewPython_BINARY_DIR

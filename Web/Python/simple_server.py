@@ -24,7 +24,8 @@ r"""
 
 import sys
 
-from paraview import simple, web
+from paraview import simple
+from vtkweb import web
 
 if __name__ == '__main__':
     # Setup the visualization pipeline.

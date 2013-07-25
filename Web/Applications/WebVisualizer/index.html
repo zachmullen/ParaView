@@ -19,7 +19,7 @@
         <script src="../../ext/widgets/jscolor/jscolor.js"></script>
         <script src="../../ext/widgets/jquery-ui/jquery-ui-1.10.0.min.js"></script>
 
-        <script src="../../lib/js/paraview-all.js"></script>
+        <script src="../../lib/js/vtkweb-all.js"></script>
         <script src="../../lib/js/paraview.ui.pipeline.js"></script>
         <script src="../../lib/js/paraview.ui.toolbar.js"></script>
         <script src="../../lib/js/paraview.ui.toolbar.vcr.js"></script>
@@ -71,7 +71,7 @@
 
             // ==== Start a new ParaView Session ===============================
 
-            paraview.start( config,
+            vtkWeb.start( config,
             function(connection){
                 pv.connection = connection;
                 if(connection.error) {
@@ -93,14 +93,14 @@
                     pv.connection.sessionURL = pv.connection.sessionURL.replace("wss:","ws:");
                 }
 
-                paraview.connect(pv.connection, function(connectionData) {
+                vtkWeb.connect(pv.connection, function(connectionData) {
                     // Create pipeline browser
                     pv.connection = connectionData;
 
                     // Fetch server state
-                    fetchServerData('pv:getPipeline', 'pipeline');
-                    fetchServerData('pv:listFilters', 'sources');
-                    fetchServerData('pv:listFiles', 'files');
+                    fetchServerData('vtk:getPipeline', 'pipeline');
+                    fetchServerData('vtk:listFilters', 'sources');
+                    fetchServerData('vtk:listFiles', 'files');
 
                     // onFetchDataDone() will be called automatically
                 }, function(code,reason){
@@ -129,7 +129,7 @@
 
                 // - viewport
                 $(".viewport-container").empty();
-                pv.viewport = paraview.createViewport({session: pv.connection.session});
+                pv.viewport = vtkWeb.createViewport({session: pv.connection.session});
                 pv.viewport.bind(".viewport-container");
 
                 // - vcr toolbar
@@ -145,7 +145,7 @@
                 $('.rescale-data').show().click(function(){
                     if(pv.connection.session) {
                         proxyId = $('.pipelineBrowser').getProxy().proxy_id;
-                        pv.connection.session.call('pv:updateScalarRange', proxyId).then(function(){
+                        pv.connection.session.call('vtk:updateScalarRange', proxyId).then(function(){
                             updateView();
                         });
                     }
@@ -197,7 +197,7 @@
             function stop() {
                 if(pv.hasOwnProperty('connection') && pv.connection.session) {
                     pv.viewport.unbind();
-                    paraview.stop(pv.connection);
+                    vtkWeb.stop(pv.connection);
                     pv = {};
                 }
             }

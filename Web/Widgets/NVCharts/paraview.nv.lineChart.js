@@ -99,7 +99,7 @@
                   }
                 }
 
-                var data = paraview.processPlotData(result, -1);
+                var data = vtkWeb.processPlotData(result, -1);
 
                 var vectorRegEx = /.*[(]\d+[)].*/;
                 for (var cc=0; cc < data.data.length; cc++) {

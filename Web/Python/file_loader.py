@@ -31,7 +31,8 @@ import sys
 import os
 
 # import paraview modules.
-from paraview import simple, web, paraviewweb_wamp, paraviewweb_protocols
+from paraview import simple, paraviewweb_wamp, paraviewweb_protocols
+from vtkweb import web
 
 # import annotations
 from autobahn.wamp import exportRpc
@@ -47,7 +48,7 @@ except ImportError:
 # Create custom File Opener class to handle clients requests
 # =============================================================================
 
-class _FileOpener(paraviewweb_wamp.ServerProtocol):
+class _FileOpener(paraviewweb_wamp.PVServerProtocol):
 
     # Application configuration
     reader     = None
@@ -58,11 +59,11 @@ class _FileOpener(paraviewweb_wamp.ServerProtocol):
 
     def initialize(self):
         # Bring used components
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebTimeHandler())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebTimeHandler())
 
         # Update authentication key to use
         self.updateSecret(_FileOpener.authKey)

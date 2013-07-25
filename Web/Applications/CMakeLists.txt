@@ -28,4 +28,4 @@ endforeach()
 
 
 add_custom_target(WebApplications ALL
-  DEPENDS ParaViewWWW ${all-copy-complete})
+  DEPENDS ${all-copy-complete})

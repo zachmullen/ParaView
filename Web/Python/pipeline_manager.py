@@ -29,7 +29,8 @@ r"""
 import os
 
 # import paraview modules.
-from paraview import web, paraviewweb_wamp, paraviewweb_protocols
+from paraview import paraviewweb_wamp, paraviewweb_protocols
+from vtkweb import web
 
 try:
     import argparse
@@ -42,21 +43,21 @@ except ImportError:
 # Create custom Pipeline Manager class to handle clients requests
 # =============================================================================
 
-class _PipelineManager(paraviewweb_wamp.ServerProtocol):
+class _PipelineManager(paraviewweb_wamp.PVServerProtocol):
 
     dataDir = None
     authKey = "paraviewweb-secret"
 
     def initialize(self):
         # Bring used components
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebTimeHandler())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebPipelineManager())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebRemoteConnection())
-        self.registerParaViewWebProtocol(paraviewweb_protocols.ParaViewWebFileManager(_PipelineManager.dataDir))
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebMouseHandler())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPort())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortImageDelivery())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebViewPortGeometryDelivery())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebTimeHandler())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebPipelineManager())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebRemoteConnection())
+        self.registerVtkWebProtocol(paraviewweb_protocols.ParaViewWebFileManager(_PipelineManager.dataDir))
 
         # Update authentication key to use
         self.updateSecret(_PipelineManager.authKey)

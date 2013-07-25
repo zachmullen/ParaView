@@ -4,7 +4,7 @@
 # GENERATE_QT_RESOURCE_FROM_FILES can be used to generate a Qt resource file
 # from a given set of files.
 # ARGUMENTS:
-# resource_file: IN : full pathname of the qrc file to generate. 
+# resource_file: IN : full pathname of the qrc file to generate.
 # resource_prefix: IN : the name used in the "prefix" attribute for the
 #                       generated qrc file.
 # file_list: IN : list of files to be added into the resource file.
@@ -36,7 +36,7 @@ ENDFUNCTION(GENERATE_QT_RESOURCE_FROM_FILES)
 #----------------------------------------------------------------------------
 MACRO(PV_PARSE_ARGUMENTS prefix arg_names option_names)
   SET(DEFAULT_ARGS)
-  FOREACH(arg_name ${arg_names})    
+  FOREACH(arg_name ${arg_names})
     SET(${prefix}_${arg_name})
   ENDFOREACH(arg_name)
   FOREACH(option ${option_names})
@@ -45,16 +45,16 @@ MACRO(PV_PARSE_ARGUMENTS prefix arg_names option_names)
 
   SET(current_arg_name DEFAULT_ARGS)
   SET(current_arg_list)
-  FOREACH(arg ${ARGN})            
-    SET(larg_names ${arg_names})    
-    LIST(FIND larg_names "${arg}" is_arg_name)                   
+  FOREACH(arg ${ARGN})
+    SET(larg_names ${arg_names})
+    LIST(FIND larg_names "${arg}" is_arg_name)
     IF (is_arg_name GREATER -1)
       SET(${prefix}_${current_arg_name} ${current_arg_list})
       SET(current_arg_name ${arg})
       SET(current_arg_list)
     ELSE (is_arg_name GREATER -1)
-      SET(loption_names ${option_names})    
-      LIST(FIND loption_names "${arg}" is_option)            
+      SET(loption_names ${option_names})
+      LIST(FIND loption_names "${arg}" is_option)
       IF (is_option GREATER -1)
        SET(${prefix}_${arg} TRUE)
       ELSE (is_option GREATER -1)
@@ -190,13 +190,13 @@ function(generate_header name)
       COMMAND kwProcessXML
               ${base_64}
               ${name}
-              \"${arg_PREFIX}\" 
+              \"${arg_PREFIX}\"
               \"${arg_SUFFIX}\"
               \"${arg_SUFFIX}\"
               ${input_files}
       DEPENDS ${arg_FILES}
-              kwProcessXML 
-     ) 
+              kwProcessXML
+     )
   endif ()
 
   if (DEFINED arg_VARIABLE)
@@ -222,7 +222,7 @@ function (generate_htmls_from_xmls output_files xmls gui_xmls output_dir)
     get_filename_component(xml "${xml}" ABSOLUTE)
     set (xmls_string "${xmls_string}${xml}+")
   endforeach()
-  
+
   set (gui_xmls_string "")
   foreach (gui_xml ${gui_xmls})
     get_filename_component(gui_xml "${gui_xml}" ABSOLUTE)
@@ -234,7 +234,7 @@ function (generate_htmls_from_xmls output_files xmls gui_xmls output_dir)
   if (NOT first_xml)
     message(FATAL_ERROR "No xml specified!!!")
   endif()
-  
+
   # extract the name from the first xml file. This is the name for temporary
   # file we use.
   get_filename_component(first_xml "${first_xml}" NAME)
@@ -281,7 +281,7 @@ endfunction()
 #------------------------------------------------------------------------------
 # Function used to build a qhp (and qch) file. Adds a custom command to generate
 # a ${DESTINATION_DIRECTORY}/${name}.qch.
-# build_help_project(name 
+# build_help_project(name
 #                    DESTINATION_DIRECTORY directory
 #                    [DOCUMENTATION_SOURCE_DIR directory]
 #                    [NAMESPACE namespacename (default:${name}.org)]
@@ -386,14 +386,14 @@ function(build_help_project name)
     OUTPUT ${arg_DESTINATION_DIRECTORY}/${name}.qch
     DEPENDS ${arg_DEPENDS}
             ${ParaView_CMAKE_DIR}/generate_qhp.cmake
-  
+
     ${extra_args}
 
     # Now, compile the qhp file to generate the qch.
     COMMAND ${QT_HELP_GENERATOR}
             ${qhp_filename}
             -o ${arg_DESTINATION_DIRECTORY}/${name}.qch
-  
+
     COMMENT "Compiling Qt help project ${name}.qhp"
 
     WORKING_DIRECTORY "${arg_DESTINATION_DIRECTORY}"
@@ -403,7 +403,7 @@ endfunction(build_help_project)
 macro(pv_set_link_interface_libs target)
   # if not lion then we need to set LINK_INTERFACE_LIBRARIES to reduce the number
   # of libraries we link against there is a limit of 253.
-  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_SYSTEM_VERSION VERSION_LESS 11.0) 
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_SYSTEM_VERSION VERSION_LESS 11.0)
     set_property(TARGET ${target}
       PROPERTY LINK_INTERFACE_LIBRARIES "${ARGN}")
   endif()
@@ -447,44 +447,6 @@ function (pv_executable_install name exe_suffix)
             DESTINATION ${VTK_INSTALL_RUNTIME_DIR}
             COMPONENT Runtime)
   endif()
-endfunction()
-
-#------------------------------------------------------------------------------
-# Function used to copy a Python package into the binary directory and compile
-# it.
-# package     :- The name of the Python package.
-# source_dir  :- The directory containing the Python source.
-# binary_dir  :- The directory to copy files to and compile into.
-#------------------------------------------------------------------------------
-function(build_python_package package source_dir binary_dir)
-  
-  set (copy-complete "${binary_dir}/${package}-copy-complete")
-
-  copy_files_recursive("${source_dir}"
-    DESTINATION "${binary_dir}"
-    REGEX "^(.*\\.py)$"
-    OUTPUT ${copy-complete}
-    LABEL "Copying ${package} files")
-
-  set(CMAKE_CONFIGURABLE_FILE_CONTENT
-    "from compileall import compile_dir
-compile_dir('${binary_dir}')
-file = open('${binary_dir}/${package}_complete', 'w')
-file.write('Done')
-")
-  configure_file(${CMAKE_ROOT}/Modules/CMakeConfigurableFile.in
-    "${CMAKE_CURRENT_BINARY_DIR}/compile_py" @ONLY)
-  unset(CMAKE_CONFIGURABLE_FILE_CONTENT)
-
-  add_custom_command(
-    COMMAND ${PYTHON_EXECUTABLE} ARGS ${CMAKE_CURRENT_BINARY_DIR}/compile_py
-    COMMAND ${PYTHON_EXECUTABLE} ARGS -O ${CMAKE_CURRENT_BINARY_DIR}/compile_py
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/compile_py
-            ${copy-complete}
-    OUTPUT  "${binary_dir}/${package}_complete"
-    COMMENT "Compiling Python files")
-
-  add_custom_target(${package} ALL DEPENDS "${binary_dir}/${package}_complete")
 endfunction()
 
 #------------------------------------------------------------------------------
@@ -548,7 +510,7 @@ function(copy_files_recursive source-dir)
   endforeach()
 
   file(GLOB_RECURSE _all_files RELATIVE "${source-dir}" "${source-dir}/*")
-  
+
   set (all_files)
   set (copy-commands)
   foreach (_file ${_all_files})
